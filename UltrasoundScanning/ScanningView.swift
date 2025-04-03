@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ScanningView: View {
-    @State private var connection: ScanningConnection
+    var connection: ScanningConnection
     @State private var fileLoader: FileDownloader
     
     @State private var image: CGImage?
@@ -78,6 +78,7 @@ struct ScanningView: View {
     
     private func finalize() {
         fileLoader.finilize(id: UUID(uuidString: patient)!)
+        connection.disconnect()
     }
 }
 

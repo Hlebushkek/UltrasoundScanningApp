@@ -31,6 +31,14 @@ final class ScanningConnection: NSObject {
         webSocketTask?.resume()
     }
     
+    func disconnect() {
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+    }
+    
+    deinit {
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+    }
+    
     private func receiveMessage() {
         webSocketTask?.receive { [weak self] result in
             switch result {
@@ -42,15 +50,12 @@ final class ScanningConnection: NSObject {
                     print(text)
                 case .data(let data):
                     print(data)
+                    Task { @MainActor in self?.progress += 1 }
                 @unknown default:
                     print("Received unknown message")
                 }
             }
         }
-    }
-    
-    deinit {
-        webSocketTask?.cancel(with: .goingAway, reason: nil)
     }
 }
 
